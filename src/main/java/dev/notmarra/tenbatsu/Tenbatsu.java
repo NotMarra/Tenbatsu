@@ -6,6 +6,7 @@ import dev.notmarra.notlib.language.LanguageManager;
 import dev.notmarra.tenbatsu.managers.PunishmentManager;
 import dev.notmarra.tenbatsu.managers.ReportManager;
 import dev.notmarra.tenbatsu.managers.StaffChatManager;
+import org.bukkit.configuration.file.FileConfiguration;
 
 public final class Tenbatsu extends NotPlugin {
     private DatabaseManager db;
@@ -17,6 +18,8 @@ public final class Tenbatsu extends NotPlugin {
     @Override
     public void initPlugin() {
         saveDefaultConfig();
+        saveDefaultConfig("gui/report.yml");
+        getCfm().register("gui/report.yml");
 
         String dbType = getConfig().getString("database.type", "sqlite");
         if (dbType.equalsIgnoreCase("mariadb")) {

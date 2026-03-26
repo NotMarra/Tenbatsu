@@ -50,4 +50,12 @@ public class StaffChatManager {
         // Also log to console
         Bukkit.getConsoleSender().sendMessage(MM.deserialize(formatted));
     }
+
+    public void broadcastToStaff(String message) {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (p.hasPermission("tenbatsu.staffchat")) {
+                p.sendMessage(MM.deserialize(message));
+            }
+        }
+    }
 }

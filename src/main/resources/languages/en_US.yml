@@ -6,6 +6,8 @@ general:
   console_only: "%prefix%<red>This command can only be run by a player."
   invalid_duration: "%prefix%<red>Invalid duration format. Use e.g. 1d, 2h, 30m."
   unknown_command: "%prefix%<red>Unknown command. Use <yellow>/notban help</yellow>."
+  teleported_successfully: "%prefix%<yellow>Teleported to %player% successfully!"
+
 
 ban:
   success: "%prefix%<green>Player <yellow>%target%</yellow> has been banned for: <white>%reason%</white>."
@@ -56,9 +58,11 @@ report:
   cooldown: "%prefix%<red>You are on report cooldown. Wait <yellow>%time%</yellow> seconds."
   max_reached: "%prefix%<red>You have reached the maximum reports for this session."
   no_reason: "%prefix%<red>Please provide a reason for the report."
+  staff_join_alert: "%prefix%<yellow>%player%</yellow><gray>has <red>%count% pending report(s)</red>.</gray>"
   staff_alert: "%prefix%<red><bold>REPORT</bold></red> <yellow>%reporter%</yellow> <gray>reported</gray> <yellow>%target%</yellow>: <white>%reason%</white>"
   no_reports: "%prefix%<gray>No pending reports."
   cleared: "%prefix%<green>All reports have been cleared."
+  marked_as_handled: "%prefix%<green>Report #%report_id% marked as handled."
 
 staffchat:
   format: "<dark_gray>[<red>STAFF</red>]</dark_gray> <yellow>%player%</yellow><gray>: <white>%message%</white>"
@@ -75,7 +79,6 @@ gui:
   warn_menu_title: "<orange>Warn Menu - %player%"
   history_menu_title: "<gray>History - %player%"
   main_menu_title: "<dark_red>Moderation Menu"
-  reports_menu_title: "<red>Reports"
   close: "<red>Close"
   back: "<gray>Back"
   confirm: "<green>Confirm"

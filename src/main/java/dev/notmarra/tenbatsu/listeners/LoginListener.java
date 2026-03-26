@@ -1,11 +1,13 @@
 package dev.notmarra.tenbatsu.listeners;
 
 import dev.notmarra.tenbatsu.Tenbatsu;
+import dev.notmarra.tenbatsu.utils.DurationParser;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
 import java.util.concurrent.ExecutionException;
@@ -46,9 +48,9 @@ public class LoginListener implements Listener {
             }
 
             String screen = plugin.getLang().get("ban.screen")
-                    .replace("%reason%", punishment.getReason())
-                    .replace("%expires%", DurationParser.format(punishment.getExpiresAt()))
-                    .replace("%staff%", punishment.getStaffName());
+                    .with("%reason%", punishment.getReason())
+                    .with("%expires%", DurationParser.format(punishment.getExpiresAt()))
+                    .with("%staff%", punishment.getStaffName()).toString();
 
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, MM.deserialize(screen));
 
@@ -58,7 +60,7 @@ public class LoginListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onLogin(PlayerLoginEvent event) {
+    public void onLogin(PlayerJoinEvent event) {
         // Notify staff of joins so they can see if a reported player joined
         var player = event.getPlayer();
         plugin.getReportManager().getPendingReports().thenAccept(reports -> {
@@ -66,9 +68,10 @@ public class LoginListener implements Listener {
                     .filter(r -> r.getTargetUuid().equals(player.getUniqueId().toString()))
                     .count();
             if (count > 0) {
-                String msg = plugin.getLang().getPrefix()
-                        + "<yellow>" + player.getName() + "</yellow>"
-                        + " <gray>has <red>" + count + " pending report(s)</red>.</gray>";
+                String msg = plugin.getLang().get("staff_join_alert")
+                                        .with("%count%", count)
+                                        .withPlayer(player).toString();
+
                 plugin.getStaffChatManager().broadcastToStaff(msg);
             }
         });
