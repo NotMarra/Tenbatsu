@@ -1,0 +1,38 @@
+pattern: """
+  #R#######
+  #PPPPPPP#
+  #PPPPPPP#
+  #PPPPPPP#
+  #PPPPPPP#
+  B###C###N
+"""
+
+title: "<red>Moderation Actions"
+
+R:
+  item: PAPER
+  name: "Pending Actions"
+  lore: ""
+
+P:
+  item: player_head
+  name: "<yellow>%player%"
+  lore: """
+    <gray>Click to manage
+    <gray>Right-click for history
+  """
+
+B:
+  item: ARROW
+  name: "<white>Back"
+  lore: ""
+
+C:
+  item: BARRIER
+  name: "<red>Close"
+  lore: ""
+
+N:
+  item: ARROW
+  name: "<white>Next"
+  lore: ""

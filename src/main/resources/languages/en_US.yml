@@ -78,7 +78,6 @@ gui:
   mute_menu_title: "<yellow>Mute Menu - %player%"
   warn_menu_title: "<orange>Warn Menu - %player%"
   history_menu_title: "<gray>History - %player%"
-  main_menu_title: "<dark_red>Moderation Menu"
   close: "<red>Close"
   back: "<gray>Back"
   confirm: "<green>Confirm"

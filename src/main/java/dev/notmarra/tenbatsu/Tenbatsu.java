@@ -19,7 +19,9 @@ public final class Tenbatsu extends NotPlugin {
     public void initPlugin() {
         saveDefaultConfig();
         saveDefaultConfig("gui/report.yml");
+        saveDefaultConfig("gui/moderation.yml");
         getCfm().register("gui/report.yml");
+        getCfm().register("gui/moderation.yml");
 
         String dbType = getConfig().getString("database.type", "sqlite");
         if (dbType.equalsIgnoreCase("mariadb")) {
