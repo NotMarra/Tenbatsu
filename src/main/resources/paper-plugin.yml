@@ -1,0 +1,7 @@
+name: Tenbatsu
+version: '0.0.1'
+main: dev.notmarra.tenbatsu.Tenbatsu
+api-version: '1.21'
+authors: [ NotMarra ]
+description: Minecraft ban system
+website: notmarra.dev, wiki.notmarra.dev

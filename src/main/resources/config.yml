@@ -1,0 +1,26 @@
+# Tenbatsu Configuration
+
+database:
+  type: sqlite  # sqlite or mariadb
+  host: localhost
+  port: 3306
+  database: tenbatsu
+  username: root
+  password: password
+  file: data  # for SQLite
+
+settings:
+  # Maximum warnings before auto-ban
+  max_warnings: 3
+  # Auto-ban duration when max warnings reached (in minutes, -1 = permanent)
+  auto_ban_duration: -1
+  # Log punishments to console
+  log_to_console: true
+  # Broadcast punishments to all players
+  broadcast_punishments: true
+  # Staff chat prefix
+  staff_chat_prefix: "&8[&cStaff&8] "
+  # Allow reporting offline players
+  report_offline: false
+  # Max reports per player (per session)
+  max_reports_per_session: 3
