@@ -70,7 +70,7 @@ public class TenbatsuCommand extends CommandGroup {
 
     private void sendHelp(org.bukkit.command.CommandSender sender) {
         plugin.getLang().get("tenbatsu.help.header").sendTo(sender);
-        String lines = plugin.getLang().get("tenbatsu.help.lines").toString();
+        String lines = plugin.getLang().get("tenbatsu.help.lines").build().buildString();
         if (lines != null && !lines.isBlank()) {
             sender.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(lines));
         }

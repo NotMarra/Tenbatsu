@@ -1,4 +1,4 @@
-pattern: |
+pattern: | 
     #########
     #HHHHHHH#
     #HHHHHHH#
@@ -25,7 +25,6 @@ H:
         <gray>Date: <white>%date%
         <gray>Expires: <white>%expires%
         <gray>Active: <white>%active%
-
 
 B:
   item: ARROW

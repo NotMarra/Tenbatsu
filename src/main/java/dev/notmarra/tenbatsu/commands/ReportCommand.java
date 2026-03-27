@@ -33,7 +33,7 @@ public class ReportCommand extends CommandGroup {
                 return;
             }
 
-            OfflinePlayer t = arg.get();
+            OfflinePlayer t = arg.getPlayer();
             if (t == null) {
                 plugin.getLang().get("general.player_not_found").with("%target%", "unknown").sendTo(reporter);
                 return;

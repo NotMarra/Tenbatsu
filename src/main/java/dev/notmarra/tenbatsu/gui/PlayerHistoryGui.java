@@ -86,7 +86,7 @@ public class PlayerHistoryGui {
                                     .lore(Text.of(historyGui.getString("B.lore", "")))
                                     .action((event, container) -> {
                                         if (currentPage > 0) {
-                                            open(staff, targetUuid, targetName, currentPage - 1);
+                                            plugin.scheduler().global(() -> open(staff, targetUuid, targetName, currentPage - 1));
                                             return;
                                         }
                                         new ModerationMenu(plugin).open(staff);
@@ -102,14 +102,14 @@ public class PlayerHistoryGui {
                                     .lore(Text.of(historyGui.getString("N.lore", "")))
                                     .action((event, container) -> {
                                         if (currentPage < totalPages - 1) {
-                                            open(staff, targetUuid, targetName, currentPage + 1);
+                                            plugin.scheduler().global(() -> open(staff, targetUuid, targetName, currentPage + 1));
                                         }
                                     });
                         }
                         return null;
                     });
 
-            gui.open(staff);
+            plugin.scheduler().global(() -> gui.open(staff));
         });
     }
 

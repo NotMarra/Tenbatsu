@@ -1,10 +1,10 @@
 name: Tenbatsu
-version: '0.0.1'
+version: ${project.version}
 main: dev.notmarra.tenbatsu.Tenbatsu
 api-version: '1.21'
 authors: [ NotMarra ]
 description: Minecraft ban system
-website: notmarra.dev, wiki.notmarra.dev
+website: wiki.notmarra.dev
 dependencies:
   server:
     NotLib:

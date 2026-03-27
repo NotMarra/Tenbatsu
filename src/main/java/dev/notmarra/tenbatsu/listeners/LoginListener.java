@@ -52,7 +52,7 @@ public class LoginListener extends NotListener {
             String screen = plugin.getLang().get("ban.screen")
                     .with("%reason%", punishment.getReason())
                     .with("%expires%", DurationParser.format(punishment.getExpiresAt()))
-                    .with("%staff%", punishment.getStaffName()).toString();
+                    .with("%staff%", punishment.getStaffName()).build().buildString();
 
             event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, MM.deserialize(screen));
 
@@ -70,9 +70,9 @@ public class LoginListener extends NotListener {
                     .filter(r -> r.getTargetUuid().equals(player.getUniqueId().toString()))
                     .count();
             if (count > 0) {
-                String msg = plugin.getLang().get("staff_join_alert")
+                String msg = plugin.getLang().get("report.staff_join_alert")
                                         .with("%count%", count)
-                                        .withPlayer(player).toString();
+                                        .withPlayer(player).build().buildString();
 
                 plugin.getStaffChatManager().broadcastToStaff(msg);
             }

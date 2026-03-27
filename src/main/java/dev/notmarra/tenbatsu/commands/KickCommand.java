@@ -30,7 +30,7 @@ public class KickCommand extends CommandGroup {
         cmd.permission = "tenbatsu.kick";
 
         PlayerArg target = cmd.playerArg("target", arg -> {
-            OfflinePlayer t = arg.get();
+            OfflinePlayer t = arg.getPlayer();
             if (t == null) {
                 lang.get("general.player_not_found").with("%target%", "unknown").sendTo(arg.getSender());
                 return;

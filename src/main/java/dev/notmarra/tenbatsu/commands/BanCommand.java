@@ -32,7 +32,7 @@ public class BanCommand extends CommandGroup {
         cmd.permission = "tenbatsu.ban";
 
         PlayerArg target = cmd.playerArg("target", arg -> {
-            OfflinePlayer t = arg.get();
+            OfflinePlayer t = arg.getPlayer();
             if(t == null) {
                 lang.get("general.specify_player").sendTo(arg.getSender());
             } else {
@@ -62,7 +62,7 @@ public class BanCommand extends CommandGroup {
         cmd.permission = "tenbatsu.tempban";
 
         PlayerArg target = cmd.playerArg("target", arg ->{
-            OfflinePlayer t = arg.get();
+            OfflinePlayer t = arg.getPlayer();
             if(t == null) {
                 lang.get("general.specify_player").sendTo(arg.getSender());
             } else {

@@ -3,6 +3,7 @@ package dev.notmarra.tenbatsu.gui;
 import dev.notmarra.notlib.file.ManagedConfig;
 import dev.notmarra.notlib.gui.GUI;
 import dev.notmarra.tenbatsu.Tenbatsu;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -49,7 +50,7 @@ public class ModerationMenu {
                             }
                             Player target = onlinePlayers.get(idx);
                             return gui.createItem(Material.PLAYER_HEAD)
-                                    .withSkullTexture(target.getName())
+                                    .withSkullTexture(target.getUniqueId().toString())
                                     .name(moderationGui.getString("P.name", "").replace("%player%", target.getName()))
                                     .lore(moderationGui.getString("P.lore", ""))
                                     .action((event,container) -> {

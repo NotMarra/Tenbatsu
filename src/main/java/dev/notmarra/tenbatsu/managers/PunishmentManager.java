@@ -49,7 +49,7 @@ public class PunishmentManager {
                         .with("%reason%", reason)
                         .with("%expires%", DurationParser.format(expiresAt))
                         .with("%staff%", staffName)
-                        .toString();
+                        .build().buildString();
                 online.kick(MM.deserialize(screen));
             }
             return p;
@@ -150,7 +150,7 @@ public class PunishmentManager {
         String screen = lang.get("kick.screen")
                 .with("%reason%", reason)
                 .with("%staff%", staffName)
-                .toString();
+                .build().buildString();
         target.kick(MM.deserialize(screen));
     }
 

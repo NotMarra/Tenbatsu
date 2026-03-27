@@ -29,7 +29,6 @@ public class ReportsGui {
     }
 
     private void open(Player staff, int requestedPage) {
-        //TODO: not opening
         plugin.getReportManager().getPendingReports().thenAccept(reports -> {
             String pattern = reportGui.getString("pattern", "");
             int pageSize = Math.max(1, getReportSlotsPerPage(pattern));
@@ -77,14 +76,14 @@ public class ReportsGui {
                                             } else  {
                                                 plugin.getReportManager().markHandled(report.getId(), staff.getName());
                                                 plugin.getLang().get("marked_as_handled").with("%report_id%", report.getId()).sendTo(staff);
-                                                open(staff, currentPage);
+                                                plugin.scheduler().global(() -> open(staff, currentPage));
                                             }
                                         });
                             }
                             case 'C' -> {
                                 return gui.createItem(Material.getMaterial(reportGui.getString("C.item", "BARRIER")))
                                         .name(
-                                                Text.of(reportGui.getString("C.name", "")).toString()
+                                                Text.of(reportGui.getString("C.name", "")).buildString()
                                         )
                                         .lore(
                                                 Text.of(reportGui.getString("C.lore", ""))
@@ -94,14 +93,14 @@ public class ReportsGui {
                             case 'B' -> {
                                 return gui.createItem(Material.getMaterial(reportGui.getString("B.item", "ARROW")))
                                         .name(
-                                                Text.of(reportGui.getString("B.name", "")).toString()
+                                                Text.of(reportGui.getString("B.name", "")).buildString()
                                         )
                                         .lore(
                                                 Text.of(reportGui.getString("B.lore", ""))
                                         )
                                         .action((event,container) ->{
                                             if (currentPage > 0) {
-                                                open(staff, currentPage - 1);
+                                                plugin.scheduler().global(() -> open(staff, currentPage-1));
                                                 return;
                                             }
                                             new ModerationMenu(plugin).open(staff);
@@ -114,14 +113,14 @@ public class ReportsGui {
 
                                 return gui.createItem(Material.getMaterial(reportGui.getString("N.item", "ARROW")))
                                         .name(
-                                                Text.of(reportGui.getString("N.name", "")).toString()
+                                                Text.of(reportGui.getString("N.name", "")).buildString()
                                         )
                                         .lore(
                                                 Text.of(reportGui.getString("N.lore", ""))
                                         )
                                         .action((event,container) ->{
                                             if (currentPage < totalPages - 1) {
-                                                open(staff, currentPage + 1);
+                                                plugin.scheduler().global(() -> open(staff, currentPage+1));
                                             }
                                         });
                             }
@@ -130,7 +129,7 @@ public class ReportsGui {
                         return null;
                     });
 
-            gui.open(staff);
+            plugin.scheduler().global(() -> gui.open(staff));
         });
     }
 
