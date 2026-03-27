@@ -1,5 +1,7 @@
 package dev.notmarra.tenbatsu.listeners;
 
+import dev.notmarra.notlib.extensions.NotListener;
+import dev.notmarra.notlib.extensions.NotPlugin;
 import dev.notmarra.tenbatsu.Tenbatsu;
 import dev.notmarra.tenbatsu.utils.DurationParser;
 import io.papermc.paper.event.player.AsyncChatEvent;
@@ -7,11 +9,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-public class ChatListener implements Listener {
-
+public class ChatListener extends NotListener {
     private final Tenbatsu plugin;
 
     public ChatListener(Tenbatsu plugin) {
+        super(plugin);
         this.plugin = plugin;
     }
 
@@ -40,6 +42,11 @@ public class ChatListener implements Listener {
                                 .sendTo(player);
             }
         });
+    }
+
+    @Override
+    public String getId() {
+        return "ChatListener-Tenbatsu";
     }
 }
 

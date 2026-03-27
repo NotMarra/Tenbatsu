@@ -1,0 +1,81 @@
+pattern: |
+    #########
+    #D#F#G###
+    #I#J#K###
+    #M#Q#####
+    #########
+    B###C####
+
+title: "<red>Moderation - %player%"
+
+D:
+  item: RED_DYE
+  name: "<red><bold>Ban</bold></red>"
+  lore: |
+    <gray>Ban a player from the server.
+    <gray>Duration: <yellow>1 Day</yellow>
+  duration: 1d
+
+I:
+  item: RED_DYE
+  name: "<red><bold>Ban</bold></red>"
+  lore: |
+    <gray>Ban a player from the server.
+    <gray>Duration: <yellow>3 Days</yellow>
+  duration: 3d
+
+M:
+  item: RED_DYE
+  name: "<red><bold>Ban</bold></red>"
+  lore: |
+    <gray>Ban a player from the server.
+    <gray>Duration: <yellow>Permanent</yellow>
+  duration: -1
+
+F:
+  item: BLUE_DYE
+  name: "<blue><bold>Mute</bold></blue>"
+  lore: |
+    <gray>Mute a player from chatting.
+    <gray>Duration: <yellow>1 Day</yellow>
+  duration: 1d
+
+J:
+  item: BLUE_DYE
+  name: "<blue><bold>Mute</bold></blue>"
+  lore: |
+    <gray>Mute a player from chatting.
+    <gray>Duration: <yellow>3 Days</yellow>
+  duration: 3d
+
+Q:
+  item: BLUE_DYE
+  name: "<blue><bold>Mute</bold></blue>"
+  lore: |
+    <gray>Mute a player from chatting.
+    <gray>Duration: <yellow>Permanent</yellow>
+  duration: -1
+
+G:
+  item: YELLOW_DYE
+  name: "<yellow><bold>Warn</bold></yellow>"
+  lore: |
+    <gray>Warn a player for misbehavior.
+    <gray>Max warnings before auto-ban: <yellow>3</yellow>
+
+K:
+  item: ORANGE_DYE
+  name: "<orange><bold>Kick</bold></orange>"
+  lore: |
+    <gray>Kick a player from the server.
+    <gray>No duration, but can be repeated.
+
+B:
+  item: ARROW
+  name: "<white>Back"
+  lore: ""
+
+C:
+  item: BARRIER
+  name: "<red>Close"
+  lore: ""

@@ -29,7 +29,8 @@ public class ReportsGui {
     }
 
     private void open(Player staff, int requestedPage) {
-        plugin.getReportManager().getPendingReports().thenAccept(reports -> plugin.scheduler().async(() -> {
+        //TODO: not opening
+        plugin.getReportManager().getPendingReports().thenAccept(reports -> {
             String pattern = reportGui.getString("pattern", "");
             int pageSize = Math.max(1, getReportSlotsPerPage(pattern));
             int totalPages = Math.max(1, (int) Math.ceil((double) reports.size() / pageSize));
@@ -130,7 +131,7 @@ public class ReportsGui {
                     });
 
             gui.open(staff);
-        }));
+        });
     }
 
     private int getReportSlotsPerPage(String pattern) {

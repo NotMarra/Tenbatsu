@@ -1,18 +1,17 @@
-pattern: """
+pattern: |
   #########
   #RRRRRRR#
   #RRRRRRR#
   #RRRRRRR#
   #RRRRRRR#
   B###C###N
-"""
 
 title: "<red>Reports"
 
 R: # Report item
   item: PAPER
   name: "<red>Report #%report_id% - <yellow>%player%"
-  lore: """
+  lore: |
   <gray>Reporter: <yellow>%reporter_name%
   <gray>Target: <yellow>%target%
   <gray>Reason: <white>%reason%
@@ -20,7 +19,6 @@ R: # Report item
   
   <green>Left-click: <gray>Mark handled
   <yellow>Right-click: <gray>Teleport to target
-  """
 
 B: #Back button
   item: ARROW

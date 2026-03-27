@@ -30,7 +30,7 @@ public class ModerationMenu {
             }
         }
 
-        plugin.scheduler().async(() -> {
+
             String pattern = moderationGui.getString("pattern", "");
             int pageSize = Math.max(1, getPlayerSlotsPerPage(pattern));
             int totalPages = Math.max(1, (int) Math.ceil((double) onlinePlayers.size() / pageSize));
@@ -54,7 +54,7 @@ public class ModerationMenu {
                                     .lore(moderationGui.getString("P.lore", ""))
                                     .action((event,container) -> {
                                         if(event.isRightClick()) {
-                                            openPlayerHistory(staff, target);
+                                            new PlayerHistoryGui(plugin).open(staff, target.getUniqueId(), target.getName());
                                         }
                                         else {
                                             openManageMenu(staff, target);
@@ -103,7 +103,7 @@ public class ModerationMenu {
                     });
 
             gui.open(staff);
-        });
+
     }
 
     private int getPlayerSlotsPerPage(String pattern) {
@@ -114,13 +114,7 @@ public class ModerationMenu {
         return count;
     }
 
-    private void openPlayerHistory(Player staff, Player target) {
-        // TODO: Implement player history GUI.
-        staff.closeInventory();
-    }
-
     private void openManageMenu(Player staff, Player target) {
-        // TODO: Implement player management GUI.
-        staff.closeInventory();
+        new PlayerActionGui(plugin).open(staff, target);
     }
 }

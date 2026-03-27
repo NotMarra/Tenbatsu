@@ -1,0 +1,43 @@
+pattern: |
+    #########
+    #HHHHHHH#
+    #HHHHHHH#
+    #HHHHHHH#
+    #HHHHHHH#
+    B###C###N
+
+types:
+  ban:
+    item: RED_DYE
+  ip_ban:
+    item: BLACK_DYE
+  mute:
+    item: BLUE_DYE
+  warn:
+    item: YELLOW_DYE
+  kick:
+    item: ORANGE_DYE
+
+H:
+    name: "<yellow>%type% by <white>%staff%"
+    lore: |
+        <gray>Reason: <white>%reason%
+        <gray>Date: <white>%date%
+        <gray>Expires: <white>%expires%
+        <gray>Active: <white>%active%
+
+
+B:
+  item: ARROW
+  name: "<white>Back"
+  lore: ""
+
+C:
+  item: BARRIER
+  name: "<red>Close"
+  lore: ""
+
+N:
+  item: ARROW
+  name: "<white>Next"
+  lore: ""

@@ -24,3 +24,5 @@ settings:
   report_offline: false
   # Max reports per player (per session)
   max_reports_per_session: 3
+  # Default reason for punishments if none provided
+  default_reason: "No reason provided"

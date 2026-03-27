@@ -1,11 +1,11 @@
-pattern: """
+pattern: |
   #R#######
   #PPPPPPP#
   #PPPPPPP#
   #PPPPPPP#
   #PPPPPPP#
   B###C###N
-"""
+
 
 title: "<red>Moderation Actions"
 
@@ -17,10 +17,9 @@ R:
 P:
   item: player_head
   name: "<yellow>%player%"
-  lore: """
+  lore: |
     <gray>Click to manage
     <gray>Right-click for history
-  """
 
 B:
   item: ARROW

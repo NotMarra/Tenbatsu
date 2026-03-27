@@ -7,10 +7,10 @@ general:
   invalid_duration: "%prefix%<red>Invalid duration format. Use e.g. 1d, 2h, 30m."
   unknown_command: "%prefix%<red>Unknown command. Use <yellow>/notban help</yellow>."
   teleported_successfully: "%prefix%<yellow>Teleported to %player% successfully!"
-
+  specify_player: "%prefix%<red>Please specify a player."
 
 ban:
-  success: "%prefix%<green>Player <yellow>%target%</yellow> has been banned for: <white>%reason%</white>."
+  success: "%prefix%<green>Player <yellow>%target%</yellow> has been banned for: <white>%reason%</white> <yellow>(Expires: %expires%)</yellow>."
   permanent: "%prefix%<green>Player <yellow>%target%</yellow> has been permanently banned for: <white>%reason%</white>."
   already_banned: "%prefix%<red>Player <yellow>%target%</yellow> is already banned."
   not_banned: "%prefix%<red>Player <yellow>%target%</yellow> is not banned."
@@ -82,3 +82,15 @@ gui:
   back: "<gray>Back"
   confirm: "<green>Confirm"
   cancel: "<red>Cancel"
+
+tenbatsu:
+  reload:
+    success: "%prefix%<green>Tenbatsu configuration reloaded."
+    failed: "%prefix%<red>Reload failed: <white>%error%</white>."
+  help:
+    header: "%prefix%<gray>Available commands:</gray>"
+    lines: |
+      <gray>- <yellow>/tenbatsu menu</yellow> <dark_gray>-</dark_gray> <white>Open moderation menu</white>
+      <gray>- <yellow>/tenbatsu reload</yellow> <dark_gray>-</dark_gray> <white>Reload plugin data</white>
+      <gray>- <yellow>/tenbatsu help</yellow> <dark_gray>-</dark_gray> <white>Show this help</white>
+

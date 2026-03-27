@@ -5,3 +5,8 @@ api-version: '1.21'
 authors: [ NotMarra ]
 description: Minecraft ban system
 website: notmarra.dev, wiki.notmarra.dev
+dependencies:
+  server:
+    NotLib:
+      load: BEFORE
+      required: true

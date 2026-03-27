@@ -1,5 +1,6 @@
 package dev.notmarra.tenbatsu.listeners;
 
+import dev.notmarra.notlib.extensions.NotListener;
 import dev.notmarra.tenbatsu.Tenbatsu;
 import dev.notmarra.tenbatsu.utils.DurationParser;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -14,12 +15,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class LoginListener implements Listener {
+public class LoginListener extends NotListener {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
     private final Tenbatsu plugin;
 
     public LoginListener(Tenbatsu plugin) {
+        super(plugin);
         this.plugin = plugin;
     }
 
@@ -75,5 +77,10 @@ public class LoginListener implements Listener {
                 plugin.getStaffChatManager().broadcastToStaff(msg);
             }
         });
+    }
+
+    @Override
+    public String getId() {
+        return "LoginListener-tenbatsu";
     }
 }
