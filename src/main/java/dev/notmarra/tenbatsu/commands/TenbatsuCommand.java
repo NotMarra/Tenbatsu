@@ -17,53 +17,51 @@ public class TenbatsuCommand extends CommandGroup {
     }
 
     public Command build() {
-        Command cmd = Command.of("tenbatsu", c -> {
-            if (!c.getSender().hasPermission("tenbatsu.use")) {
-                plugin.getLang().get("general.no_permission").sendTo(c.getSender());
-                return;
-            }
-            sendHelp(c.getSender());
-        });
+        Command cmd = Command.of("tenbatsu")
+                .setPermission("tenbatsu.use")
+                .onExecute(c -> {
+                    sendHelp(c.getSender());
+                });
 
-        cmd.permission = "tenbatsu.use";
-
-        cmd.stringArg("action", arg -> {
-            String action = arg.get();
-            if (action == null) {
-                sendHelp(arg.getSender());
-                return;
-            }
-
-            switch (action.toLowerCase()) {
-                case "menu" -> {
-                    if (!arg.getSender().hasPermission("tenbatsu.menu")) {
-                        plugin.getLang().get("general.no_permission").sendTo(arg.getSender());
+        cmd.stringArg("action")
+                .setSuggestions(List.of("help", "menu", "reload"))
+                .onExecute(arg -> {
+                    String action = arg.get();
+                    if (action == null) {
+                        sendHelp(arg.getSender());
                         return;
                     }
-                    if (!(arg.getSender() instanceof Player player)) {
-                        plugin.getLang().get("general.console_only").sendTo(arg.getSender());
-                        return;
+
+                    switch (action.toLowerCase()) {
+                        case "menu" -> {
+                            if (!arg.getSender().hasPermission("tenbatsu.menu")) {
+                                plugin.getLang().get("general.no_permission").sendTo(arg.getSender());
+                                return;
+                            }
+                            if (!(arg.getSender() instanceof Player player)) {
+                                plugin.getLang().get("general.console_only").sendTo(arg.getSender());
+                                return;
+                            }
+                            new ModerationMenu(plugin).open(player);
+                        }
+                        case "reload" -> {
+                            if (!arg.getSender().hasPermission("tenbatsu.reload")) {
+                                plugin.getLang().get("general.no_permission").sendTo(arg.getSender());
+                                return;
+                            }
+                            try {
+                                plugin.reloadPluginData();
+                                plugin.getLang().get("tenbatsu.reload.success").sendTo(arg.getSender());
+                            } catch (Exception ex) {
+                                plugin.getLang().get("tenbatsu.reload.failed")
+                                        .with("%error%", ex.getMessage() == null ? "unknown" : ex.getMessage())
+                                        .sendTo(arg.getSender());
+                            }
+                        }
+                        case "help" -> sendHelp(arg.getSender());
+                        default -> sendHelp(arg.getSender());
                     }
-                    new ModerationMenu(plugin).open(player);
-                }
-                case "reload" -> {
-                    if (!arg.getSender().hasPermission("tenbatsu.reload")) {
-                        plugin.getLang().get("general.no_permission").sendTo(arg.getSender());
-                        return;
-                    }
-                    try {
-                        plugin.reloadPluginData();
-                        plugin.getLang().get("tenbatsu.reload.success").sendTo(arg.getSender());
-                    } catch (Exception ex) {
-                        plugin.getLang().get("tenbatsu.reload.failed")
-                                .with("%error%", ex.getMessage() == null ? "unknown" : ex.getMessage())
-                                .sendTo(arg.getSender());
-                    }
-                }
-                case "help" -> sendHelp(arg.getSender());
-                default -> sendHelp(arg.getSender());
-            }
-        });
+                });
 
         return cmd;
     }
@@ -74,11 +72,6 @@ public class TenbatsuCommand extends CommandGroup {
         if (lines != null && !lines.isBlank()) {
             sender.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(lines));
         }
-    }
-
-    @Override
-    public String getId() {
-        return "tenbatsu-command-tenbatsu";
     }
 
     @Override

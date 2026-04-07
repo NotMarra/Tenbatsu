@@ -1,6 +1,5 @@
 package dev.notmarra.tenbatsu.gui;
 
-import dev.notmarra.notlib.chat.Text;
 import dev.notmarra.notlib.file.ManagedConfig;
 import dev.notmarra.notlib.gui.GUI;
 import dev.notmarra.tenbatsu.Tenbatsu;
@@ -20,7 +19,8 @@ public class PlayerActionGui {
     }
 
     public void open(Player staff, Player target) {
-
+        // GUI must be built and opened on the main thread
+        plugin.scheduler().global(() -> {
             String pattern = actionGui.getString("pattern", "");
             String title = actionGui.getString("title", "<red>Moderation - %player%")
                     .replace("%player%", target.getName());
@@ -32,29 +32,28 @@ public class PlayerActionGui {
                         switch (info.ch) {
                             case 'D', 'I', 'M' -> {
                                 return gui.createItem(resolveMaterial(info.ch, "PAPER"))
-                                        .name(Text.of(actionGui.getString(info.ch + ".name", "")).toString())
-                                        .lore(Text.of(actionGui.getString(info.ch + ".lore", "")))
+                                        .name(actionGui.getString(info.ch + ".name", ""))
+                                        .lore(actionGui.getString(info.ch + ".lore", ""))
                                         .action((event, container) -> applyTimedPunishment(staff, target, info.ch, true));
                             }
                             case 'F', 'J', 'Q' -> {
                                 return gui.createItem(resolveMaterial(info.ch, "PAPER"))
-                                        .name(Text.of(actionGui.getString(info.ch + ".name", "")).toString())
-                                        .lore(Text.of(actionGui.getString(info.ch + ".lore", "")))
+                                        .name(actionGui.getString(info.ch + ".name", ""))
+                                        .lore(actionGui.getString(info.ch + ".lore", ""))
                                         .action((event, container) -> applyTimedPunishment(staff, target, info.ch, false));
                             }
                             case 'G' -> {
                                 return gui.createItem(resolveMaterial(info.ch, "PAPER"))
-                                        .name(Text.of(actionGui.getString(info.ch + ".name", "")).toString())
-                                        .lore(Text.of(actionGui.getString(info.ch + ".lore", "")))
+                                        .name(actionGui.getString(info.ch + ".name", ""))
+                                        .lore(actionGui.getString(info.ch + ".lore", ""))
                                         .action((event, container) -> {
                                             if (!target.isOnline()) {
                                                 plugin.getLang().get("general.player_not_found")
                                                         .with("%target%", target.getName())
                                                         .sendTo(staff);
-                                                new ModerationMenu(plugin).open(staff);
+                                                plugin.scheduler().global(() -> new ModerationMenu(plugin).open(staff));
                                                 return;
                                             }
-
                                             String reason = resolveReason('G', target, "Warned via moderation GUI");
                                             plugin.getPunishmentManager().warnPlayer(target.getUniqueId(), target.getName(), staff.getName(), reason)
                                                     .thenAccept(count -> {
@@ -63,49 +62,48 @@ public class PlayerActionGui {
                                                                 .with("%count%", count)
                                                                 .with("%max%", 3)
                                                                 .sendTo(staff);
-                                                        new ModerationMenu(plugin).open(staff);
+                                                        plugin.scheduler().global(() -> new ModerationMenu(plugin).open(staff));
                                                     });
                                         });
                             }
                             case 'K' -> {
                                 return gui.createItem(resolveMaterial(info.ch, "PAPER"))
-                                        .name(Text.of(actionGui.getString(info.ch + ".name", "")).toString())
-                                        .lore(Text.of(actionGui.getString(info.ch + ".lore", "")))
+                                        .name(actionGui.getString(info.ch + ".name", ""))
+                                        .lore(actionGui.getString(info.ch + ".lore", ""))
                                         .action((event, container) -> {
                                             if (!target.isOnline()) {
                                                 plugin.getLang().get("general.player_not_found")
                                                         .with("%target%", target.getName())
                                                         .sendTo(staff);
-                                                new ModerationMenu(plugin).open(staff);
+                                                plugin.scheduler().global(() -> new ModerationMenu(plugin).open(staff));
                                                 return;
                                             }
-
                                             String reason = resolveReason('K', target, "Kicked via moderation GUI");
                                             plugin.getPunishmentManager().kickPlayer(target, staff.getName(), reason);
                                             plugin.getLang().get("kick.success")
                                                     .with("%target%", target.getName())
                                                     .sendTo(staff);
-                                            new ModerationMenu(plugin).open(staff);
+                                            plugin.scheduler().global(() -> new ModerationMenu(plugin).open(staff));
                                         });
                             }
                             case 'B' -> {
                                 return gui.createItem(resolveMaterial('B', "ARROW"))
-                                        .name(Text.of(actionGui.getString("B.name", "<white>Back")).toString())
-                                        .lore(Text.of(actionGui.getString("B.lore", "")))
-                                        .action((event, container) -> new ModerationMenu(plugin).open(staff));
+                                        .name(actionGui.getString("B.name", "<white>Back"))
+                                        .lore(actionGui.getString("B.lore", ""))
+                                        .action((event, container) -> plugin.scheduler().global(() -> new ModerationMenu(plugin).open(staff)));
                             }
                             case 'C' -> {
                                 return gui.createItem(resolveMaterial('C', "BARRIER"))
-                                        .name(Text.of(actionGui.getString("C.name", "<red>Close")).toString())
-                                        .lore(Text.of(actionGui.getString("C.lore", "")))
+                                        .name(actionGui.getString("C.name", "<red>Close"))
+                                        .lore(actionGui.getString("C.lore", ""))
                                         .action((event, container) -> event.getWhoClicked().closeInventory());
                             }
                         }
-
                         return null;
                     });
 
             gui.open(staff);
+        });
     }
 
     private void applyTimedPunishment(Player staff, Player target, char slot, boolean ban) {
@@ -113,7 +111,7 @@ public class PlayerActionGui {
             plugin.getLang().get("general.player_not_found")
                     .with("%target%", target.getName())
                     .sendTo(staff);
-            new ModerationMenu(plugin).open(staff);
+            plugin.scheduler().global(() -> new ModerationMenu(plugin).open(staff));
             return;
         }
 
@@ -121,7 +119,7 @@ public class PlayerActionGui {
         long expiresAt = DurationParser.parse(durationInput);
         if (expiresAt == 0) {
             plugin.getLang().get("general.invalid_duration").sendTo(staff);
-            open(staff, target);
+            plugin.scheduler().global(() -> open(staff, target));
             return;
         }
 
@@ -134,7 +132,7 @@ public class PlayerActionGui {
                                 .with("%target%", target.getName())
                                 .with("%reason%", reason)
                                 .sendTo(staff);
-                        new ModerationMenu(plugin).open(staff);
+                        plugin.scheduler().global(() -> new ModerationMenu(plugin).open(staff));
                     });
             return;
         }
@@ -147,7 +145,7 @@ public class PlayerActionGui {
                             .with("%target%", target.getName())
                             .with("%reason%", reason)
                             .sendTo(staff);
-                    new ModerationMenu(plugin).open(staff);
+                    plugin.scheduler().global(() -> new ModerationMenu(plugin).open(staff));
                 });
     }
 

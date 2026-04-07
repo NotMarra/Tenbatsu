@@ -1,13 +1,11 @@
 package dev.notmarra.tenbatsu.listeners;
 
 import dev.notmarra.notlib.extensions.NotListener;
-import dev.notmarra.notlib.extensions.NotPlugin;
 import dev.notmarra.tenbatsu.Tenbatsu;
 import dev.notmarra.tenbatsu.utils.DurationParser;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 
 public class ChatListener extends NotListener {
     private final Tenbatsu plugin;
@@ -30,18 +28,25 @@ public class ChatListener extends NotListener {
             return;
         }
 
-        // Mute check
+        // Mute check — must cancel synchronously inside the event handler.
+        // getMute uses the cached repo so this is fast (no real I/O in hot path).
         if (player.hasPermission("tenbatsu.bypass.mute")) return;
 
-        plugin.getPunishmentManager().getMute(player.getUniqueId()).thenAccept(mute -> {
+        try {
+            var mute = plugin.getPunishmentManager()
+                    .getMute(player.getUniqueId())
+                    .get(2, java.util.concurrent.TimeUnit.SECONDS);
+
             if (mute != null) {
                 event.setCancelled(true);
                 String expires = DurationParser.format(mute.getExpiresAt());
                 plugin.getLang().get("mute.blocked")
                         .with("%expires%", expires)
-                                .sendTo(player);
+                        .sendTo(player);
             }
-        });
+        } catch (Exception e) {
+            plugin.getLogger().warning("Failed to check mute for " + player.getName() + ": " + e.getMessage());
+        }
     }
 
     @Override
@@ -49,4 +54,3 @@ public class ChatListener extends NotListener {
         return "ChatListener-Tenbatsu";
     }
 }
-

@@ -16,53 +16,42 @@ public class StaffChatCommand extends CommandGroup {
     }
 
     public Command buildToggle() {
-        Command cmd = Command.of("staffchat", c -> {
-            if (!c.getSender().hasPermission("tenbatsu.staffchat")) {
-                plugin.getLang().get("general.no_permission").sendTo(c.getSender());
-                return;
-            }
+        return Command.of("staffchat")
+                .setPermission("tenbatsu.staffchat")
+                .onExecute(c -> {
+                    if (!(c.getSender() instanceof Player player)) {
+                        plugin.getLang().get("general.console_only").sendTo(c.getSender());
+                        return;
+                    }
 
-            if (!(c.getSender() instanceof Player player)) {
-                plugin.getLang().get("general.console_only").sendTo(c.getSender());
-                return;
-            }
-
-            plugin.getStaffChatManager().toggle(player.getUniqueId());
-            boolean enabled = plugin.getStaffChatManager().isInStaffChat(player.getUniqueId());
-            plugin.getLang().get(enabled ? "staffchat.toggle_on" : "staffchat.toggle_off").sendTo(player);
-        });
-
-        cmd.permission = "tenbatsu.staffchat";
-        return cmd;
+                    plugin.getStaffChatManager().toggle(player.getUniqueId());
+                    boolean enabled = plugin.getStaffChatManager().isInStaffChat(player.getUniqueId());
+                    plugin.getLang().get(enabled ? "staffchat.toggle_on" : "staffchat.toggle_off").sendTo(player);
+                });
     }
 
     public Command buildSend() {
-        Command cmd = Command.of("sc", c -> {
-            if (!c.getSender().hasPermission("tenbatsu.staffchat")) {
-                plugin.getLang().get("general.no_permission").sendTo(c.getSender());
-            }
-        });
-        cmd.permission = "tenbatsu.staffchat";
+        Command cmd = Command.of("sc")
+                        .setPermission("tenbatsu.staffchat")
+                        .onExecute(c -> {
+                            plugin.getLang().get("staffchat.usage").sendTo(c.getSender());
+                        });
 
-        cmd.greedyStringArg("message", arg -> {
-            if (!(arg.getSender() instanceof Player player)) {
-                plugin.getLang().get("general.console_only").sendTo(arg.getSender());
-                return;
-            }
+        cmd.greedyStringArg("message")
+                .onExecute(arg -> {
+                    if (!(arg.getSender() instanceof Player player)) {
+                        plugin.getLang().get("general.console_only").sendTo(arg.getSender());
+                        return;
+                    }
 
-            String msg = arg.get();
-            if (msg == null || msg.isBlank()) {
-                return;
-            }
-            plugin.getStaffChatManager().sendStaffMessage(player, msg);
-        });
+                    String msg = arg.get();
+                    if (msg == null || msg.isBlank()) {
+                        return;
+                    }
+                    plugin.getStaffChatManager().sendStaffMessage(player, msg);
+                });
 
         return cmd;
-    }
-
-    @Override
-    public String getId() {
-        return "staffchat-command-tenbatsu";
     }
 
     @Override

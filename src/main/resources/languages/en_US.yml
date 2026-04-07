@@ -5,6 +5,7 @@ general:
   player_not_found: "%prefix%<red>Player <yellow>%target%</yellow> not found."
   console_only: "%prefix%<red>This command can only be run by a player."
   invalid_duration: "%prefix%<red>Invalid duration format. Use e.g. 1d, 2h, 30m."
+  specify_duration: "%prefix%<red>Please specify a duration."
   unknown_command: "%prefix%<red>Unknown command. Use <yellow>/notban help</yellow>."
   teleported_successfully: "%prefix%<yellow>Teleported to %player% successfully!"
   specify_player: "%prefix%<red>Please specify a player."
@@ -13,8 +14,6 @@ ban:
   success: "%prefix%<green>Player <yellow>%target%</yellow> has been banned for: <white>%reason%</white> <yellow>(Expires: %expires%)</yellow>."
   permanent: "%prefix%<green>Player <yellow>%target%</yellow> has been permanently banned for: <white>%reason%</white>."
   already_banned: "%prefix%<red>Player <yellow>%target%</yellow> is already banned."
-  not_banned: "%prefix%<red>Player <yellow>%target%</yellow> is not banned."
-  unban_success: "%prefix%<green>Player <yellow>%target%</yellow> has been unbanned."
   screen: |
     <red><bold>YOU ARE BANNED</bold></red>
     <gray>Reason: <white>%reason%</white>
@@ -22,6 +21,13 @@ ban:
     <gray>Banned by: <white>%staff%</white>
     <gray>Appeal at: <aqua>discord.gg/yourserver</aqua>
   broadcast: "%prefix%<yellow>%target%</yellow> <red>has been banned by <yellow>%staff%</yellow>. Reason: <white>%reason%</white>."
+  usage: "%prefix%<red>Usage: /ban <player> [reason]"
+  usage_duration: "%prefix%<red>Usage: /ban <player> <duration> [reason]"
+
+unban:
+  usage: "%prefix%<red>Usage: /unban <player>"
+  success: "%prefix%<green>Player <yellow>%target%</yellow> has been unbanned."
+  not_banned: "%prefix%<red>Player <yellow>%target%</yellow> is not banned."
 
 mute:
   success: "%prefix%<green>Player <yellow>%target%</yellow> has been muted for: <white>%reason%</white>."
@@ -31,6 +37,8 @@ mute:
   unmute_success: "%prefix%<green>Player <yellow>%target%</yellow> has been unmuted."
   blocked: "%prefix%<red>You are muted. Expires: <yellow>%expires%</yellow>."
   broadcast: "%prefix%<yellow>%target%</yellow> <red>has been muted by <yellow>%staff%</yellow>. Reason: <white>%reason%</white>."
+  usage: "%prefix%<red>Usage: /mute <player> [reason]"
+  usage_duration: "%prefix%<red>Usage: /mute <player> <duration> [reason]"
 
 warn:
   success: "%prefix%<green>Player <yellow>%target%</yellow> has been warned. (<yellow>%count%/%max%</yellow> warnings)"
@@ -39,49 +47,47 @@ warn:
   cleared: "%prefix%<green>Warnings for <yellow>%target%</yellow> have been cleared."
   auto_ban: "%prefix%<red>Player <yellow>%target%</yellow> has been auto-banned for reaching <yellow>%max%</yellow> warnings."
   broadcast: "%prefix%<yellow>%target%</yellow> <red>has been warned by <yellow>%staff%</yellow>. Reason: <white>%reason%</white>."
+  usage: "%prefix%<red>Usage: /warn <player> [reason]"
+  clear_usage: "%prefix%<red>Usage: /clearwarnings <player>"
 
 kick:
   success: "%prefix%<green>Player <yellow>%target%</yellow> has been kicked."
+  not_online: "%prefix%<red>Player <yellow>%target%</yellow> is not online."
   screen: |
     <red><bold>YOU HAVE BEEN KICKED</bold></red>
     <gray>Reason: <white>%reason%</white>
     <gray>Kicked by: <white>%staff%</white>
   broadcast: "%prefix%<yellow>%target%</yellow> <red>has been kicked by <yellow>%staff%</yellow>. Reason: <white>%reason%</white>."
+  usage: "%prefix%<red>Usage: /kick <player> [reason]"
 
 history:
   header: "%prefix%<gray>Punishment history for <yellow>%target%</yellow>:"
-  entry: "<gray>  [<white>%id%</white>] <yellow>%type%</yellow> by <white>%staff%</white> - %reason% (<gray>%date%</gray>)"
+  entry: "<gray>  [<white>%id%</white>] <yellow>%type%</yellow> by <white>%staff%</white> - %reason% (<gray>%date%</gray>) %active%"
   empty: "%prefix%<gray>No punishment history for <yellow>%target%</yellow>."
+  usage: "%prefix%<red>Usage: /history <player>"
 
 report:
+  cannot_report_self: "%prefix%<red>You cannot report yourself."
   sent: "%prefix%<green>Your report against <yellow>%target%</yellow> has been sent."
   cooldown: "%prefix%<red>You are on report cooldown. Wait <yellow>%time%</yellow> seconds."
   max_reached: "%prefix%<red>You have reached the maximum reports for this session."
   no_reason: "%prefix%<red>Please provide a reason for the report."
-  staff_join_alert: "%prefix%<yellow>%player%</yellow><gray>has <red>%count% pending report(s)</red>.</gray>"
+  staff_join_alert: "%prefix%<yellow>%player%</yellow> <gray>has <red>%count% pending report(s)</red>.</gray>"
   staff_alert: "%prefix%<red><bold>REPORT</bold></red> <yellow>%reporter%</yellow> <gray>reported</gray> <yellow>%target%</yellow>: <white>%reason%</white>"
   no_reports: "%prefix%<gray>No pending reports."
   cleared: "%prefix%<green>All reports have been cleared."
   marked_as_handled: "%prefix%<green>Report #%report_id% marked as handled."
+  usage: "%prefix%<red>Usage: /report <player> <reason>"
 
 staffchat:
   format: "<dark_gray>[<red>STAFF</red>]</dark_gray> <yellow>%player%</yellow><gray>: <white>%message%</white>"
   toggle_on: "%prefix%<green>Staff chat enabled."
   toggle_off: "%prefix%<red>Staff chat disabled."
+  usage: "%prefix%<red>Usage: /staffchat <message>"
 
 duration:
   permanent: "Permanent"
   format: "%d%h%m"
-
-gui:
-  ban_menu_title: "<red>Ban Menu - %player%"
-  mute_menu_title: "<yellow>Mute Menu - %player%"
-  warn_menu_title: "<orange>Warn Menu - %player%"
-  history_menu_title: "<gray>History - %player%"
-  close: "<red>Close"
-  back: "<gray>Back"
-  confirm: "<green>Confirm"
-  cancel: "<red>Cancel"
 
 tenbatsu:
   reload:
@@ -93,4 +99,9 @@ tenbatsu:
       <gray>- <yellow>/tenbatsu menu</yellow> <dark_gray>-</dark_gray> <white>Open moderation menu</white>
       <gray>- <yellow>/tenbatsu reload</yellow> <dark_gray>-</dark_gray> <white>Reload plugin data</white>
       <gray>- <yellow>/tenbatsu help</yellow> <dark_gray>-</dark_gray> <white>Show this help</white>
-
+      <gray>- <yellow>/ban <player> [reason]</yellow> <dark_gray>-</dark_gray> <white>Ban a player</white>
+      <gray>- <yellow>/mute <player> [reason]</yellow> <dark_gray>-</dark_gray> <white>Mute a player</white>
+      <gray>- <yellow>/warn <player> [reason]</yellow> <dark_gray>-</dark_gray> <white>Warn a player</white>
+      <gray>- <yellow>/kick <player> [reason]</yellow> <dark_gray>-</dark_gray> <white>Kick a player</white>
+      <gray>- <yellow>/history <player></yellow> <dark_gray>-</dark_gray> <white>View player's punishment history</white>
+      <gray>- <yellow>/report <player> <reason></yellow> <dark_gray>-</dark_gray> <white>Report a player</white>

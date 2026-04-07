@@ -71,15 +71,7 @@ public final class Tenbatsu extends NotPlugin {
 
     public void reloadPluginData() {
         reloadConfig();
-        getCfm().register("gui/report.yml");
-        getCfm().register("gui/moderation.yml");
-        getCfm().register("gui/history.yml");
-        getCfm().register("gui/player_action.yml");
-
-        lang = languageManager()
-                .defaultLocale("en_US")
-                .seedFile("languages/en_US.yml")
-                .build();
+        getCfm().reloadAll();
     }
 
     @Override

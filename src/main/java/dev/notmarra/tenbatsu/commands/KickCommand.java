@@ -22,59 +22,46 @@ public class KickCommand extends CommandGroup {
     }
 
     public Command build() {
-        Command cmd = Command.of("kick", c -> {
-            if (!c.getSender().hasPermission("tenbatsu.kick")) {
-                lang.get("general.no_permission").sendTo(c.getSender());
-            }
-        });
-        cmd.permission = "tenbatsu.kick";
+        Command cmd = Command.of("kick")
+                        .setPermission("tenbatsu.kick")
+                        .onExecute(c -> {
+                            lang.get("kick.usage").sendTo(c.getSender());
+                        });
+        PlayerArg target = (PlayerArg) cmd.playerArg("target")
+                .onExecute(c -> {
+                    OfflinePlayer t = c.getPlayer();
+                    if (t == null) { lang.get("general.player_not_found").with("%target%", "unknown").sendTo(c.getSender()); return; }
+                    if (kickTarget(t, c.getSender().getName(), defaultReason())) {
+                        lang.get("general.player_not_found").with("%target%", t.getName()).sendTo(c.getSender());
+                        return;
+                    }
+                    lang.get("kick.success").with("%target%", t.getName()).sendTo(c.getSender());
+                });
 
-        PlayerArg target = cmd.playerArg("target", arg -> {
-            OfflinePlayer t = arg.getPlayer();
-            if (t == null) {
-                lang.get("general.player_not_found").with("%target%", "unknown").sendTo(arg.getSender());
-                return;
-            }
-            if (!kickTarget(t, arg.getSender().getName(), defaultReason())) {
-                lang.get("general.player_not_found").with("%target%", t.getName()).sendTo(arg.getSender());
-                return;
-            }
-            lang.get("kick.success").with("%target%", t.getName()).sendTo(arg.getSender());
-        });
-
-        target.greedyStringArg("reason", arg -> {
-            String reason = arg.get();
-            OfflinePlayer t = target.getPlayer();
-            if (t == null) {
-                lang.get("general.player_not_found").with("%target%", "unknown").sendTo(arg.getSender());
-                return;
-            }
-            if (!kickTarget(t, arg.getSender().getName(), reason)) {
-                lang.get("general.player_not_found").with("%target%", t.getName()).sendTo(arg.getSender());
-                return;
-            }
-            lang.get("kick.success").with("%target%", t.getName()).sendTo(arg.getSender());
-        });
+        target.greedyStringArg("reason")
+                .onExecute(c -> {
+                    OfflinePlayer t = target.get();
+                    String reason = c.get();
+                    if (t == null) { lang.get("general.player_not_found").with("%target%", "unknown").sendTo(c.getSender()); return; }
+                    if (kickTarget(t, c.getSender().getName(), reason)) {
+                        lang.get("general.player_not_found").with("%target%", t.getName()).sendTo(c.getSender());
+                        return;
+                    }
+                    lang.get("kick.success").with("%target%", t.getName()).sendTo(c.getSender());
+                });
 
         return cmd;
     }
 
     private boolean kickTarget(OfflinePlayer target, String staffName, String reason) {
         Player online = Bukkit.getPlayer(target.getUniqueId());
-        if (online == null) {
-            return false;
-        }
-
+        if (online == null) return true;
         plugin.getPunishmentManager().kickPlayer(online, staffName, reason);
-
         if (plugin.getConfig().getBoolean("settings.broadcast_punishments", false)) {
-            lang.get("kick.broadcast")
-                    .with("%target%", target.getName())
-                    .with("%reason%", reason)
-                    .with("%staff%", staffName)
+            lang.get("kick.broadcast").with("%target%", target.getName()).with("%reason%", reason).with("%staff%", staffName)
                     .sendToAll(plugin.getServer().getOnlinePlayers());
         }
-        return true;
+        return false;
     }
 
     private String defaultReason() {
@@ -82,12 +69,5 @@ public class KickCommand extends CommandGroup {
     }
 
     @Override
-    public String getId() {
-        return "kick-command-tenbatsu";
-    }
-
-    @Override
-    public List<Command> notCommands() {
-        return List.of(this.build());
-    }
+    public List<Command> notCommands() { return List.of(this.build()); }
 }

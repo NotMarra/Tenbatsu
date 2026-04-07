@@ -12,25 +12,25 @@ R: # Report item
   item: PAPER
   name: "<red>Report #%report_id% - <yellow>%player%"
   lore: |
-  <gray>Reporter: <yellow>%reporter_name%
-  <gray>Target: <yellow>%target%
-  <gray>Reason: <white>%reason%
-  <gray>Date: <white>%date%
-  
-  <green>Left-click: <gray>Mark handled
-  <yellow>Right-click: <gray>Teleport to target
+    <gray>Reporter: <yellow>%reporter_name%
+    <gray>Target: <yellow>%target%
+    <gray>Reason: <white>%reason%
+    <gray>Date: <white>%date%
+    
+    <green>Left-click: <gray>Mark handled
+    <yellow>Right-click: <gray>Teleport to target
 
 B: #Back button
   item: ARROW
   name: "<white>Back"
-  lore: ""
+  lore: null
 
 C: #Close button
   item: BARRIER
   name: "<red>Close"
-  lore: ""
+  lore: null
 
 N: #Next page button
   item: ARROW
   name: "<white>Next"
-  lore: ""
+  lore: null

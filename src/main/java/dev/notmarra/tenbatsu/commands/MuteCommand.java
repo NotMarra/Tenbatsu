@@ -23,130 +23,97 @@ public class MuteCommand extends CommandGroup {
     }
 
     public Command build() {
-        Command cmd = Command.of("mute", c -> {
-            if (!c.getSender().hasPermission("tenbatsu.mute")) {
-                lang.get("general.no_permission").sendTo(c.getSender());
-            }
-        });
-        cmd.permission = "tenbatsu.mute";
+        Command cmd = Command.of("mute")
+                        .setPermission("tenbatsu.mute")
+                        .onExecute(c -> {
+                            lang.get("mute.usage").sendTo(c.getSender());
+                        });
+        PlayerArg target = (PlayerArg) cmd.playerArg("target")
+                        .onExecute(c -> {
+                            OfflinePlayer t = c.getPlayer();
+                            if (t == null) { lang.get("general.player_not_found").with("%target%", "unknown").sendTo(c.getSender()); return; }
+                            mutePlayer(t, c.getSender(), c.getSender().getName(), defaultReason(), -1);
+                        });
 
-        PlayerArg target = cmd.playerArg("target", arg -> {
-            OfflinePlayer t = arg.getPlayer();
-            if (t == null) {
-                lang.get("general.player_not_found").with("%target%", "unknown").sendTo(arg.getSender());
-                return;
-            }
-            mutePlayer(t, arg.getSender(), arg.getSender().getName(), defaultReason(), -1);
-        });
-
-        target.greedyStringArg("reason", arg -> {
-            String reason = arg.get();
-            OfflinePlayer t = target.getPlayer();
-            if (t == null) {
-                lang.get("general.player_not_found").with("%target%", "unknown").sendTo(arg.getSender());
-                return;
-            }
-            mutePlayer(t, arg.getSender(), arg.getSender().getName(), reason, -1);
-        });
+        target.greedyStringArg("reason")
+                        .onExecute(c -> {
+                            OfflinePlayer t = target.get();
+                            String reason = c.get();
+                            if (t == null) { lang.get("general.player_not_found").with("%target%", "unknown").sendTo(c.getSender()); return; }
+                            mutePlayer(t, c.getSender(), c.getSender().getName(), reason, -1);
+                        });
 
         return cmd;
     }
 
     public Command buildTemp() {
-        Command cmd = Command.of("tempmute", c -> {
-            if (!c.getSender().hasPermission("tenbatsu.tempmute")) {
-                lang.get("general.no_permission").sendTo(c.getSender());
-            }
-        });
-        cmd.permission = "tenbatsu.tempmute";
+        Command cmd = Command.of("tempmute")
+                .setPermission("tenbatsu.tempmute")
+                .onExecute(c -> {
+                    lang.get("mute.usage_duration").sendTo(c.getSender());
+                });
 
-        PlayerArg target = cmd.playerArg("target", arg -> {
-            if (arg.getPlayer() == null) {
-                lang.get("general.player_not_found").with("%target%", "unknown").sendTo(arg.getSender());
-            }
-        });
+        PlayerArg target = (PlayerArg) cmd.playerArg("target")
+                        .onExecute(c -> {
+                            OfflinePlayer t = c.getPlayer();
+                            if (t == null) { lang.get("general.player_not_found").with("%target%", "unknown").sendTo(c.getSender()); return; }
+                            lang.get("general.specify_duration").sendTo(c.getSender());
+                        });
 
-        StringArg duration = target.stringArg("duration", arg -> {
-            String d = arg.get();
-            OfflinePlayer t = target.getPlayer();
-            long expiresAt = DurationParser.parse(d);
-            if (t == null) {
-                lang.get("general.player_not_found").with("%target%", "unknown").sendTo(arg.getSender());
-                return;
-            }
-            if (expiresAt <= 0) {
-                lang.get("general.invalid_duration").sendTo(arg.getSender());
-                return;
-            }
-            mutePlayer(t, arg.getSender(), arg.getSender().getName(), defaultReason(), expiresAt);
-        });
+        StringArg duration = (StringArg) target.stringArg("duration")
+                        .onExecute(c -> {
+                            OfflinePlayer t = target.get();
+                            String d = c.get();
+                            if (t == null) { lang.get("general.player_not_found").with("%target%", "unknown").sendTo(c.getSender()); return; }
+                            long expiresAt = DurationParser.parse(d);
+                            if (expiresAt <= 0) { lang.get("general.invalid_duration").sendTo(c.getSender()); return; }
+                            mutePlayer(t, c.getSender(), c.getSender().getName(), defaultReason(), expiresAt);
+                        });
 
-        duration.greedyStringArg("reason", arg -> {
-            String reason = arg.get();
-            OfflinePlayer t = target.getPlayer();
-            long expiresAt = DurationParser.parse(duration.get());
-            if (t == null) {
-                lang.get("general.player_not_found").with("%target%", "unknown").sendTo(arg.getSender());
-                return;
-            }
-            if (expiresAt <= 0) {
-                lang.get("general.invalid_duration").sendTo(arg.getSender());
-                return;
-            }
-            mutePlayer(t, arg.getSender(), arg.getSender().getName(), reason, expiresAt);
-        });
+        duration.greedyStringArg("reason")
+                        .onExecute(c -> {
+                            OfflinePlayer t = target.get();
+                            String d = duration.get();
+                            String reason = c.get();
+                            if (t == null) { lang.get("general.player_not_found").with("%target%", "unknown").sendTo(c.getSender()); return; }
+                            if (d == null) { lang.get("general.specify_duration").sendTo(c.getSender()); return; }
+                            long expiresAt = DurationParser.parse(d);
+                            if (expiresAt <= 0) { lang.get("general.invalid_duration").sendTo(c.getSender()); return; }
+                            mutePlayer(t, c.getSender(), c.getSender().getName(), reason, expiresAt);
+                        });
 
         return cmd;
     }
 
     public Command buildUnmute() {
-        Command cmd = Command.of("unmute", c -> {
-            if (!c.getSender().hasPermission("tenbatsu.unmute")) {
-                lang.get("general.no_permission").sendTo(c.getSender());
-            }
-        });
-        cmd.permission = "tenbatsu.unmute";
+        Command cmd = Command.of("unmute")
+                .setPermission("tenbatsu.unmute")
+                .onExecute(c -> {
+                    lang.get("unmute.usage").sendTo(c.getSender());
+                });
 
-        cmd.playerArg("target", arg -> {
-            OfflinePlayer t = arg.getPlayer();
-            if (t == null) {
-                lang.get("general.player_not_found").with("%target%", "unknown").sendTo(arg.getSender());
-                return;
-            }
-
-            plugin.getPunishmentManager().unmutePlayer(t.getUniqueId()).thenAccept(unmuted -> {
-                if (unmuted) {
-                    lang.get("mute.unmute_success").with("%target%", t.getName()).sendTo(arg.getSender());
-                } else {
-                    lang.get("mute.not_muted").with("%target%", t.getName()).sendTo(arg.getSender());
-                }
-            });
-        });
+        cmd.playerArg("target")
+                .onExecute(c -> {
+                    OfflinePlayer t = c.get();
+                    if (t == null) { lang.get("general.player_not_found").with("%target%", "unknown").sendTo(c.getSender()); return; }
+                    plugin.getPunishmentManager().unmutePlayer(t.getUniqueId()).thenAccept(unmuted -> {
+                        if (unmuted) lang.get("mute.unmute_success").with("%target%", t.getName()).sendTo(c.getSender());
+                        else lang.get("mute.not_muted").with("%target%", t.getName()).sendTo(c.getSender());
+                    });
+                });
 
         return cmd;
     }
 
     private void mutePlayer(OfflinePlayer target, CommandSender sender, String staffName, String reason, long expiresAt) {
         plugin.getPunishmentManager().getMute(target.getUniqueId()).thenAccept(activeMute -> {
-            if (activeMute != null) {
-                lang.get("mute.already_muted").with("%target%", target.getName()).sendTo(sender);
-                return;
-            }
-
-            plugin.getPunishmentManager()
-                    .mutePlayer(target.getUniqueId(), target.getName(), staffName, reason, expiresAt)
+            if (activeMute != null) { lang.get("mute.already_muted").with("%target%", target.getName()).sendTo(sender); return; }
+            plugin.getPunishmentManager().mutePlayer(target.getUniqueId(), target.getName(), staffName, reason, expiresAt)
                     .thenAccept(p -> {
                         String key = expiresAt == -1 ? "mute.permanent" : "mute.success";
-                        lang.get(key)
-                                .with("%target%", target.getName())
-                                .with("%reason%", reason)
-                                .sendTo(sender);
-
+                        lang.get(key).with("%target%", target.getName()).with("%reason%", reason).sendTo(sender);
                         if (plugin.getConfig().getBoolean("settings.broadcast_punishments", false)) {
-                            lang.get("mute.broadcast")
-                                    .with("%target%", target.getName())
-                                    .with("%reason%", reason)
-                                    .with("%staff%", staffName)
+                            lang.get("mute.broadcast").with("%target%", target.getName()).with("%reason%", reason).with("%staff%", staffName)
                                     .sendToAll(plugin.getServer().getOnlinePlayers());
                         }
                     });
@@ -158,16 +125,7 @@ public class MuteCommand extends CommandGroup {
     }
 
     @Override
-    public String getId() {
-        return "mute-command-tenbatsu";
-    }
-
-    @Override
     public List<Command> notCommands() {
-        return List.of(
-                this.build(),
-                this.buildTemp(),
-                this.buildUnmute()
-        );
+        return List.of(this.build(), this.buildTemp(), this.buildUnmute());
     }
 }

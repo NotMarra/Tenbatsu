@@ -11,14 +11,15 @@ import java.util.Set;
 import java.util.UUID;
 
 public class StaffChatManager {
+    private final Tenbatsu plugin;
     private final LanguageManager lang;
     private static final MiniMessage MM = MiniMessage.miniMessage();
+    private final Set<UUID> staffChatToggled = new HashSet<>();
 
     public StaffChatManager(Tenbatsu plugin) {
+        this.plugin = plugin;
         this.lang = plugin.getLang();
     }
-
-    private final Set<UUID> staffChatToggled = new HashSet<>();
 
     public boolean isInStaffChat(UUID uuid) {
         return staffChatToggled.contains(uuid);
@@ -33,12 +34,6 @@ public class StaffChatManager {
     }
 
     public void sendStaffMessage(Player sender, String message) {
-        String formatted = lang.get("staffchat.format")
-                .withPlayer(sender)
-                .with("%message%", message)
-                .toString();
-
-
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.hasPermission("tenbatsu.staffchat")) {
                 lang.get("staffchat.format")
@@ -47,7 +42,12 @@ public class StaffChatManager {
                         .sendTo(p);
             }
         }
-        // Also log to console
+        // Log to console
+        String formatted = lang.get("staffchat.format")
+                .withPlayer(sender)
+                .with("%message%", message)
+                .build()
+                .buildString();
         Bukkit.getConsoleSender().sendMessage(MM.deserialize(formatted));
     }
 
@@ -57,5 +57,6 @@ public class StaffChatManager {
                 p.sendMessage(MM.deserialize(message));
             }
         }
+        Bukkit.getConsoleSender().sendMessage(MM.deserialize(message));
     }
 }

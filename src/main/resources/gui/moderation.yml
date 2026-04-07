@@ -24,14 +24,14 @@ P:
 B:
   item: ARROW
   name: "<white>Back"
-  lore: ""
+  lore: null
 
 C:
   item: BARRIER
   name: "<red>Close"
-  lore: ""
+  lore: null
 
 N:
   item: ARROW
   name: "<white>Next"
-  lore: ""
+  lore: null

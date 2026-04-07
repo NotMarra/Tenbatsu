@@ -1,6 +1,7 @@
 package dev.notmarra.tenbatsu.managers;
 
 import dev.notmarra.notlib.cache.CachedRepository;
+import dev.notmarra.notlib.cache.WriteStrategy;
 import dev.notmarra.notlib.database.DatabaseManager;
 import dev.notmarra.notlib.language.LanguageManager;
 import dev.notmarra.tenbatsu.Tenbatsu;
@@ -30,7 +31,7 @@ public class PunishmentManager {
     }
 
     public void init() {
-        db.registerCached(Punishment.class);
+        db.registerCached(Punishment.class, WriteStrategy.READ_THROUGH);
         repo = db.cached(Punishment.class);
     }
 
@@ -41,8 +42,7 @@ public class PunishmentManager {
                                                    long expiresAt) {
         Punishment p = new Punishment(target, targetName, "CONSOLE", staffName,
                 PunishmentType.BAN, reason, expiresAt);
-        return repo.upsertAsync(p).thenApply(v -> {
-            // Kick if online
+        return repo.insertAsync(p).thenApply(v -> {
             Player online = Bukkit.getPlayer(target);
             if (online != null) {
                 String screen = lang.get("ban.screen")
@@ -50,26 +50,43 @@ public class PunishmentManager {
                         .with("%expires%", DurationParser.format(expiresAt))
                         .with("%staff%", staffName)
                         .build().buildString();
-                online.kick(MM.deserialize(screen));
+                plugin.scheduler().global(() -> online.kick(MM.deserialize(screen)));
             }
             return p;
         });
     }
 
     public CompletableFuture<Boolean> unbanPlayer(UUID target) {
-        return getActivePunishment(target, PunishmentType.BAN).thenCompose(opt -> {
-            if (opt == null) return CompletableFuture.completedFuture(false);
-            opt.setActive(false);
-            return repo.upsertAsync(opt).thenApply(v -> true);
+        return repo.findAllAsync().thenCompose(all -> {
+            Punishment active = all.stream()
+                    .filter(p -> p.getPlayerUuid().equals(target)
+                            && p.getType() == PunishmentType.BAN
+                            && p.isActive()
+                            && !p.isExpired())
+                    .findFirst()
+                    .orElse(null);
+
+            if (active == null) return CompletableFuture.completedFuture(false);
+
+            active.setActive(false);
+            return repo.upsertAsync(active).thenApply(v -> true);
         });
     }
 
     public CompletableFuture<Boolean> isBanned(UUID target) {
-        return getActivePunishment(target, PunishmentType.BAN).thenApply(p -> {
-            if (p == null) return false;
-            if (p.isExpired()) {
-                p.setActive(false);
-                repo.upsert(p);
+        return repo.findAllAsync().thenApply(all -> {
+            Punishment active = all.stream()
+                    .filter(p -> p.getPlayerUuid().equals(target)
+                            && p.getType() == PunishmentType.BAN
+                            && p.isActive())
+                    .findFirst()
+                    .orElse(null);
+
+            if (active == null) return false;
+
+            if (active.isExpired()) {
+                active.setActive(false);
+                repo.upsert(active);
                 return false;
             }
             return true;
@@ -83,36 +100,57 @@ public class PunishmentManager {
                                                     long expiresAt) {
         Punishment p = new Punishment(target, targetName, "CONSOLE", staffName,
                 PunishmentType.MUTE, reason, expiresAt);
-        return repo.upsertAsync(p).thenApply(v -> p);
+        return repo.insertAsync(p).thenApply(v -> p);
     }
 
     public CompletableFuture<Boolean> unmutePlayer(UUID target) {
-        return getActivePunishment(target, PunishmentType.MUTE).thenCompose(opt -> {
-            if (opt == null) return CompletableFuture.completedFuture(false);
-            opt.setActive(false);
-            return repo.upsertAsync(opt).thenApply(v -> true);
+        return repo.findAllAsync().thenCompose(all -> {
+            Punishment active = all.stream()
+                    .filter(p -> p.getPlayerUuid().equals(target)
+                            && p.getType() == PunishmentType.MUTE
+                            && p.isActive()
+                            && !p.isExpired())
+                    .findFirst()
+                    .orElse(null);
+
+            if (active == null) return CompletableFuture.completedFuture(false);
+
+            active.setActive(false);
+            return repo.upsertAsync(active).thenApply(v -> true);
         });
     }
 
     public CompletableFuture<Punishment> getMute(UUID target) {
-        return getActivePunishment(target, PunishmentType.MUTE).thenApply(p -> {
-            if (p == null) return null;
-            if (p.isExpired()) {
-                p.setActive(false);
-                repo.upsert(p);
+        return repo.findAllAsync().thenApply(all -> {
+            Punishment active = all.stream()
+                    .filter(p -> p.getPlayerUuid().equals(target)
+                            && p.getType() == PunishmentType.MUTE
+                            && p.isActive())
+                    .findFirst()
+                    .orElse(null);
+
+            if (active == null) return null;
+
+            if (active.isExpired()) {
+                active.setActive(false);
+                repo.upsert(active);
                 return null;
             }
-            return p;
+            return active;
         });
     }
 
     // ── WARN ─────────────────────────────────────────────────────────────────
 
+    /**
+     * Issues a new warning. id=0 ensures the ORM treats this as INSERT (auto-increment),
+     * so each warn becomes its own DB row instead of overwriting an existing one.
+     */
     public CompletableFuture<Integer> warnPlayer(UUID target, String targetName,
                                                  String staffName, String reason) {
         Punishment p = new Punishment(target, targetName, "CONSOLE", staffName,
                 PunishmentType.WARN, reason, -1);
-        return repo.upsertAsync(p).thenCompose(v -> getWarnCount(target));
+        return repo.insertAsync(p).thenCompose(v -> getWarnCount(target));
     }
 
     public CompletableFuture<Integer> getWarnCount(UUID target) {
@@ -141,17 +179,16 @@ public class PunishmentManager {
     // ── KICK ─────────────────────────────────────────────────────────────────
 
     public void kickPlayer(Player target, String staffName, String reason) {
-        // Log kick to DB but don't make it "active" since player is gone
         Punishment p = new Punishment(target.getUniqueId(), target.getName(),
                 "CONSOLE", staffName, PunishmentType.KICK, reason, 0);
         p.setActive(false);
-        repo.upsert(p);
+        repo.insert(p);
 
         String screen = lang.get("kick.screen")
                 .with("%reason%", reason)
                 .with("%staff%", staffName)
                 .build().buildString();
-        target.kick(MM.deserialize(screen));
+        plugin.scheduler().global(() -> target.kick(MM.deserialize(screen)));
     }
 
     // ── HISTORY ──────────────────────────────────────────────────────────────
@@ -166,17 +203,6 @@ public class PunishmentManager {
     }
 
     // ── HELPERS ──────────────────────────────────────────────────────────────
-
-    private CompletableFuture<Punishment> getActivePunishment(UUID target, PunishmentType type) {
-        return repo.findAllAsync().thenApply(list ->
-                list.stream()
-                        .filter(p -> p.getPlayerUuid().equals(target)
-                                && p.getType() == type
-                                && p.isActive())
-                        .findFirst()
-                        .orElse(null)
-        );
-    }
 
     public CachedRepository<Integer, Punishment> getRepo() { return repo; }
 }

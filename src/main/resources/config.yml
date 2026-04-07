@@ -20,7 +20,7 @@ settings:
   broadcast_punishments: true
   # Staff chat prefix
   staff_chat_prefix: "&8[&cStaff&8] "
-  # Allow reporting offline players
+  # Allow reporting offline players // NOT IMPLEMENTED yet, will be added in a future update
   report_offline: false
   # Max reports per player (per session)
   max_reports_per_session: 3

@@ -15,6 +15,7 @@ D:
     <gray>Ban a player from the server.
     <gray>Duration: <yellow>1 Day</yellow>
   duration: 1d
+  reason: "Violation of server rules."
 
 I:
   item: RED_DYE
@@ -23,6 +24,7 @@ I:
     <gray>Ban a player from the server.
     <gray>Duration: <yellow>3 Days</yellow>
   duration: 3d
+  reason: "Violation of server rules."
 
 M:
   item: RED_DYE
@@ -31,6 +33,7 @@ M:
     <gray>Ban a player from the server.
     <gray>Duration: <yellow>Permanent</yellow>
   duration: -1
+  reason: "Violation of server rules."
 
 F:
   item: BLUE_DYE
@@ -39,6 +42,7 @@ F:
     <gray>Mute a player from chatting.
     <gray>Duration: <yellow>1 Day</yellow>
   duration: 1d
+  reason: "Violation of server rules."
 
 J:
   item: BLUE_DYE
@@ -47,6 +51,7 @@ J:
     <gray>Mute a player from chatting.
     <gray>Duration: <yellow>3 Days</yellow>
   duration: 3d
+  reason: "Violation of server rules."
 
 Q:
   item: BLUE_DYE
@@ -55,6 +60,7 @@ Q:
     <gray>Mute a player from chatting.
     <gray>Duration: <yellow>Permanent</yellow>
   duration: -1
+  reason: "Violation of server rules."
 
 G:
   item: YELLOW_DYE
@@ -62,20 +68,22 @@ G:
   lore: |
     <gray>Warn a player for misbehavior.
     <gray>Max warnings before auto-ban: <yellow>3</yellow>
+  reason: "Violation of server rules."
 
 K:
   item: ORANGE_DYE
-  name: "<orange><bold>Kick</bold></orange>"
+  name: "<gold><bold>Kick</bold></gold>"
   lore: |
     <gray>Kick a player from the server.
     <gray>No duration, but can be repeated.
+  reason: "Violation of server rules."
 
 B:
   item: ARROW
   name: "<white>Back"
-  lore: ""
+  lore: null
 
 C:
   item: BARRIER
   name: "<red>Close"
-  lore: ""
+  lore: null

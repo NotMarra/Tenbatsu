@@ -10,7 +10,7 @@ import java.util.UUID;
 public class Punishment {
 
     @Column(name = "id", primaryKey = true, autoIncrement = true)
-    private int id;
+    private Integer id;
 
     @Column(name = "player_uuid")
     private String playerUuid;
@@ -60,8 +60,8 @@ public class Punishment {
     }
 
     // Getters / Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
 
     public UUID getPlayerUuid() { return UUID.fromString(playerUuid); }
     public void setPlayerUuid(String playerUuid) { this.playerUuid = playerUuid; }

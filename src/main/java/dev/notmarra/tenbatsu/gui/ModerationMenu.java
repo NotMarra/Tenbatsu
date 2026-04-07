@@ -3,7 +3,6 @@ package dev.notmarra.tenbatsu.gui;
 import dev.notmarra.notlib.file.ManagedConfig;
 import dev.notmarra.notlib.gui.GUI;
 import dev.notmarra.tenbatsu.Tenbatsu;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -24,13 +23,14 @@ public class ModerationMenu {
     }
 
     public void open(Player staff, int requestedPage) {
-        List<Player> onlinePlayers = new ArrayList<>();
-        for (Player online : plugin.getServer().getOnlinePlayers()) {
-            if (!online.equals(staff)) {
-                onlinePlayers.add(online);
+        // Must run on main thread - inventory operations require it
+        plugin.scheduler().global(() -> {
+            List<Player> onlinePlayers = new ArrayList<>();
+            for (Player online : plugin.getServer().getOnlinePlayers()) {
+                if (!online.equals(staff)) {
+                    onlinePlayers.add(online);
+                }
             }
-        }
-
 
             String pattern = moderationGui.getString("pattern", "");
             int pageSize = Math.max(1, getPlayerSlotsPerPage(pattern));
@@ -50,15 +50,14 @@ public class ModerationMenu {
                             }
                             Player target = onlinePlayers.get(idx);
                             return gui.createItem(Material.PLAYER_HEAD)
-                                    .withSkullTexture(target.getUniqueId().toString())
+                                    .skullOwner(target.getName())
                                     .name(moderationGui.getString("P.name", "").replace("%player%", target.getName()))
                                     .lore(moderationGui.getString("P.lore", ""))
-                                    .action((event,container) -> {
-                                        if(event.isRightClick()) {
+                                    .action((event, container) -> {
+                                        if (event.isRightClick()) {
                                             new PlayerHistoryGui(plugin).open(staff, target.getUniqueId(), target.getName());
-                                        }
-                                        else {
-                                            openManageMenu(staff, target);
+                                        } else {
+                                            new PlayerActionGui(plugin).open(staff, target);
                                         }
                                     });
                         }
@@ -89,7 +88,6 @@ public class ModerationMenu {
                             if (currentPage >= totalPages - 1) {
                                 return gui.createItem(Material.AIR).name(" ");
                             }
-
                             return gui.createItem(Material.getMaterial(moderationGui.getString("N.item", "ARROW")))
                                     .name(moderationGui.getString("N.name", "Next"))
                                     .lore(moderationGui.getString("N.lore", ""))
@@ -104,7 +102,7 @@ public class ModerationMenu {
                     });
 
             gui.open(staff);
-
+        });
     }
 
     private int getPlayerSlotsPerPage(String pattern) {
@@ -113,9 +111,5 @@ public class ModerationMenu {
             if (c == 'P') count++;
         }
         return count;
-    }
-
-    private void openManageMenu(Player staff, Player target) {
-        new PlayerActionGui(plugin).open(staff, target);
     }
 }
